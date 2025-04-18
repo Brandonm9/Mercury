@@ -1,5 +1,22 @@
-{% extends 'base.html' %}
+<!-- templates/empleados/registrar_venta.html -->
+{% extends 'base_empleados.html' %}
+
 {% block titulo %}Registrar Venta{% endblock %}
+
+{% block navegacion %}
+<a href="{{ url_for('empleados.panel') }}" class="{% if request.path == url_for('empleados.panel') %}activo{% endif %}">
+  <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+</a>
+<a href="{{ url_for('empleados.ingresar_producto') }}"
+  class="{% if request.path == url_for('empleados.ingresar_producto') %}activo{% endif %}">
+  <i class="bi bi-box-arrow-in-down"></i><span>Registrar entrada</span>
+</a>
+<a href="{{ url_for('empleados.registrar_venta') }}"
+  class="{% if request.path == url_for('empleados.registrar_venta') %}activo{% endif %}">
+  <i class="bi bi-cash-stack"></i><span>Registrar venta</span>
+</a>
+{% endblock %}
+
 {% block contenido %}
 <h2>Registrar Venta</h2>
 <form method="post">
@@ -19,6 +36,6 @@
     <label for="motivo" class="form-label">Motivo</label>
     <input type="text" class="form-control" id="motivo" name="motivo">
   </div>
-  <button type="submit" class="btn btn-primary">Vender</button>
+  <button type="submit" class="btn btn-primary">Registrar venta</button>
 </form>
 {% endblock %}

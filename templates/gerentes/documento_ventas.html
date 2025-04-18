@@ -1,12 +1,41 @@
-{% extends 'base.html' %}
-{% block titulo %}Generar Documento{% endblock %}
+{% extends 'base_gerente.html' %}
+
+{% block navegacion %}
+<a href="{{ url_for('gerentes.panel') }}" class="{% if request.path == url_for('gerentes.panel') %}activo{% endif %}">
+  <i class="bi bi-speedometer2"></i>
+  <span>Dashboard</span>
+</a>
+<a href="{{ url_for('gerentes.documento_ventas') }}"
+  class="{% if request.path == url_for('gerentes.documento_ventas') %}activo{% endif %}">
+  <i class="bi bi-file-earmark-text"></i>
+  <span>Generar reporte</span>
+</a>
+<a href="{{ url_for('gerentes.ventas_vendedor') }}"
+  class="{% if request.path == url_for('gerentes.ventas_vendedor') %}activo{% endif %}">
+  <i class="bi bi-people"></i>
+  <span>Ventas por vendedor</span>
+</a>
+{% endblock %}
+
+{% block titulo %}Generar Reporte{% endblock %}
+
 {% block contenido %}
-<h2>Generar Documento de Ventas</h2>
-<form method="post">
-  <div class="mb-3">
-    <label for="fecha" class="form-label">Fecha</label>
-    <input type="date" class="form-control" id="fecha" name="fecha" required>
+<h2>Generar Reporte</h2>
+
+<!-- FORMULARIO ACTUALIZADO -->
+<form method="post" action="{{ url_for('gerentes.descargar_pdf') }}" class="mb-4">
+  <div class="row g-3">
+    <div class="col-md-4">
+      <label for="fecha_inicio" class="form-label">Fecha inicio</label>
+      <input type="date" id="fecha_inicio" name="start_date" class="form-control" required>
+    </div>
+    <div class="col-md-4">
+      <label for="fecha_fin" class="form-label">Fecha fin</label>
+      <input type="date" id="fecha_fin" name="end_date" class="form-control" required>
+    </div>
+    <div class="col-md-4 align-self-end">
+      <button type="submit" class="btn btn-primary w-100">Descargar PDF</button>
+    </div>
   </div>
-  <button type="submit" class="btn btn-primary">Generar</button>
 </form>
 {% endblock %}

@@ -1,26 +1,47 @@
-{# templates/gerentes/ventas_vendedor.html #}
-{% extends 'base.html' %}
+<!-- templates/gerentes/documento_ventas.html -->
+{% extends 'base_gerente.html' %}
+
+{% block navegacion %}
+<a href="{{ url_for('gerentes.panel') }}" class="{% if request.path == url_for('gerentes.panel') %}activo{% endif %}">
+  <i class="bi bi-speedometer2"></i>
+  <span>Dashboard</span>
+</a>
+<a href="{{ url_for('gerentes.documento_ventas') }}"
+  class="{% if request.path == url_for('gerentes.documento_ventas') %}activo{% endif %}">
+  <i class="bi bi-file-earmark-text"></i>
+  <span>Generar reporte</span>
+</a>
+<a href="{{ url_for('gerentes.ventas_vendedor') }}"
+  class="{% if request.path == url_for('gerentes.ventas_vendedor') %}activo{% endif %}">
+  <i class="bi bi-people"></i>
+  <span>Ventas por vendedor</span>
+</a>
+{% endblock %}
+
 {% block titulo %}Ventas por Vendedor{% endblock %}
+
+<!--<h3>Generar Reporte de Ventas</h3>
+
+<form method="post" class="mb-4 row g-2 align-items-end">
+  <div class="col-auto">
+    <label for="fecha" class="form-label">Fecha:</label>
+    <input type="date" id="fecha" name="fecha" class="form-control" required>
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary">
+      <i class="bi bi-file-earmark-pdf"></i> Generar PDF
+    </button>
+  </div>
+</form>-->
 
 {% block contenido %}
 <h2>Ventas por Vendedor</h2>
-
-{% if alertas %}
-  <div class="alert alert-warning">
-    <ul>
-      {% for a in alertas %}
-      <li>{{ a.producto.nombre }}: {{ a.stock_actual }} unidades</li>
-      {% endfor %}
-    </ul>
-  </div>
-{% endif %}
-
 <div class="table-responsive">
-  <table class="table table-hover align-middle">
+  <table class="table table-striped align-middle">
     <thead class="table-dark">
       <tr>
         <th>Vendedor</th>
-        <th>Total Vendido</th>
+        <th>Total</th>
       </tr>
     </thead>
     <tbody>
@@ -29,16 +50,8 @@
         <td>{{ v.vendedor }}</td>
         <td>{{ v.total }}</td>
       </tr>
-      {% else %}
-      <tr>
-        <td colspan="2" class="text-center">No hay ventas registradas.</td>
-      </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
-{% endblock %}
-
-{% block scripts %}
-{{ super() }}
 {% endblock %}

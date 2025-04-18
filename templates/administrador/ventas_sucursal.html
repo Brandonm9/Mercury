@@ -1,23 +1,84 @@
-{% extends 'base.html' %}
-{% block titulo %}Ventas de {{ sucursal.nombre }}{% endblock %}
-{% block contenido %}
-<h2>Ventas de {{ sucursal.nombre }}</h2>
-<canvas id="ventasChart"></canvas>
+{% extends 'administrador/base_admin.html' %}
+
+{% block titulo %}Ventas – {{ selected_sucursal.nombre }}{% endblock %}
+
+{% block navegacion %}
+<a href="{{ url_for('administrador.panel_administrador') }}"
+  class="nav-link {% if request.endpoint=='administrador.panel_administrador' %}activo{% endif %}">
+  <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+</a>
+<a href="{{ url_for('administrador.inventario_global') }}"
+  class="nav-link {% if request.endpoint=='administrador.inventario_global' %}activo{% endif %}">
+  <i class="bi bi-box-seam"></i><span>Inventario Global</span>
+</a>
+<a href="{{ url_for('administrador.ver_sucursal', id_sucursal=selected_sucursal.id) }}"
+  class="nav-link {% if request.endpoint=='administrador.ver_sucursal' %}activo{% endif %}">
+  <i class="bi bi-bar-chart"></i><span>Ventas por Sucursal</span>
+</a>
 {% endblock %}
+
+{% block contenido %}
+<h2>Ventas de {{ selected_sucursal.nombre }}</h2>
+
+<!-- Selector de Sucursal -->
+<div class="mb-4">
+  <label for="sucSelect" class="form-label">Sucursal:</label>
+  <select id="sucSelect" class="form-select" onchange="location=this.value">
+    {% for s in sucursales %}
+    <option value="{{ url_for('administrador.ver_sucursal', id_sucursal=s.id) }}" {% if s.id==selected_sucursal.id
+      %}selected{% endif %}>
+      {{ s.nombre }}
+    </option>
+    {% endfor %}
+  </select>
+</div>
+
+<!-- Gráfico de barras -->
+<div class="table-responsive">
+  <canvas id="ventasChart"></canvas>
+</div>
+
+<!-- Tabla de ventas por vendedor -->
+<h3 class="mt-5">Ventas por Vendedor</h3>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Vendedor</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in ventas_vendedores %}
+      <tr>
+        <td>{{ v.vendedor }}</td>
+        <td>{{ v.total }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
 {% block scripts %}
+{{ super() }}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-fetch(`{{ url_for('administrador.api_ventas_sucursal') }}?sucursal_id={{ sucursal.id }}`)
-  .then(res => res.json())
-  .then(datos => {
-    const ctx = document.getElementById('ventasChart');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: datos.map(d => d.fecha),
-        datasets: [{ label: 'Ventas', data: datos.map(d => d.total) }]
-      }
-    });
+  const datos = {{ datos| tojson }};
+  const ctx = document.getElementById('ventasChart');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: datos.map(d => d.fecha),
+      datasets: [{
+        label: 'Ventas',
+        data: datos.map(d => d.total),
+        backgroundColor: 'rgba(37,125,210,0.5)',
+        borderColor: 'rgba(37,125,210,1)',
+        borderWidth: 1
+      }]
+    },
+    options: { scales: { y: { beginAtZero: true } } }
   });
 </script>
 {% endblock %}

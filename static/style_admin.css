@@ -1,0 +1,65 @@
+/* Body y layout */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f5f5f5;
+    height: 100%;
+}
+
+.d-flex.h-100 {
+    height: calc(100vh - 56px);
+    /* altura total menos header */
+}
+
+/* Sidebar fijo */
+aside#sidebar {
+    width: 250px;
+    background: #0d6efd;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    padding-top: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Enlaces del menú */
+aside#sidebar .nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+/* Hover */
+aside#sidebar .nav a:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Activo */
+aside#sidebar .nav a.activo {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-left: 4px solid #ffc107;
+    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+/* Iconos */
+aside#sidebar .nav a i {
+    font-size: 1.2rem;
+}
+
+/* Main content */
+main {
+    background: #f5f5f5;
+    overflow: auto;
+    padding: 1.5rem;
+}
+
+/* Tablas */
+.table-responsive {
+    margin-top: 1rem;
+}

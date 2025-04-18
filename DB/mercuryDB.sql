@@ -7,7 +7,6 @@ GO
 CREATE ROLE Empleado;
 CREATE ROLE Gerente;
 CREATE ROLE Administrador;
-GO
 
 -- Sucursales
 CREATE TABLE Sucursal (
@@ -15,7 +14,6 @@ CREATE TABLE Sucursal (
     nombre VARCHAR(100) NOT NULL,
     direccion VARCHAR(200) NOT NULL
 );
-GO
 
 -- Categorías
 CREATE TABLE Categoria (
@@ -23,7 +21,6 @@ CREATE TABLE Categoria (
     nombre VARCHAR(50) NOT NULL,
     descripcion TEXT
 );
-GO
 
 -- Proveedores
 CREATE TABLE Proveedor (
@@ -34,7 +31,6 @@ CREATE TABLE Proveedor (
     correo VARCHAR(100),
     RUC_NIT VARCHAR(20) UNIQUE
 );
-GO
 
 -- Productos
 CREATE TABLE Producto (
@@ -45,7 +41,6 @@ CREATE TABLE Producto (
     FOREIGN KEY (categoria_id) REFERENCES Categoria(id),
     FOREIGN KEY (proveedor_id) REFERENCES Proveedor(id)
 );
-GO
 
 -- Productos por Sucursal 
 CREATE TABLE ProductoSucursal (
@@ -58,7 +53,6 @@ CREATE TABLE ProductoSucursal (
     FOREIGN KEY (producto_id) REFERENCES Producto(id),
     CONSTRAINT UC_SucursalProducto UNIQUE (sucursal_id, producto_id)
 );
-GO
 
 -- Usuarios 
 CREATE TABLE Usuario (
@@ -72,7 +66,6 @@ CREATE TABLE Usuario (
     estado BIT NOT NULL DEFAULT 1,
     FOREIGN KEY (sucursal_id) REFERENCES Sucursal(id)
 );
-GO
 
 -- Movimientos de inventario por sucursal
 CREATE TABLE Movimiento (
@@ -86,7 +79,6 @@ CREATE TABLE Movimiento (
     FOREIGN KEY (usuario_id) REFERENCES Usuario(id),
     FOREIGN KEY (producto_sucursal_id) REFERENCES ProductoSucursal(id)
 );
-GO
 
 -- Auditoría
 CREATE TABLE Auditoria (
@@ -97,178 +89,49 @@ CREATE TABLE Auditoria (
     tabla_afectada VARCHAR(50) NOT NULL,
     FOREIGN KEY (usuario_id) REFERENCES Usuario(id)
 );
-GO 
 
--- Alertas
-CREATE TABLE Alertas (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
-    fecha DATETIME NOT NULL DEFAULT GETDATE(),
-    sucursal_id INT NOT NULL,
-    producto_id INT NOT NULL,
-    stock_actual INT NOT NULL,
-    stock_minimo INT NOT NULL,
-    mensaje VARCHAR(255) NULL,
-    FOREIGN KEY (sucursal_id) REFERENCES Sucursal(id),
-    FOREIGN KEY (producto_id) REFERENCES Producto(id)
-);
-GO
-
---==================================================================================================================
+-------------------------------------------------------------------------------------------
 --Creacion de trigger
--- Trigger
--- Esta es una alerta para poder ver que producto esta bajo y de que sucursal
-CREATE TRIGGER tr_AlertasStockBajo
-ON ProductoSucursal
-AFTER INSERT, UPDATE
+--Trigger actualizar stock en sucursales
+GO
+CREATE TRIGGER tr_ActualizarStockSucursal
+ON Movimiento
+AFTER INSERT
 AS
 BEGIN
     SET NOCOUNT ON;
-    INSERT INTO Alertas (sucursal_id, producto_id, stock_actual, stock_minimo, mensaje)
-    SELECT
-        ps.sucursal_id,
-        ps.producto_id,
-        ps.stock_actual,
-        ps.stock_minimo,
-        CONCAT('Stock bajo en sucursal ', ps.sucursal_id, ': ', ps.stock_actual, ' <= ', ps.stock_minimo)
-    FROM inserted ps
-    WHERE ps.stock_actual <= ps.stock_minimo;
-END;
-GO
 
---==============================================================================================================
--- Crear vista
-go
-CREATE VIEW vw_VentasDiariasPorSucursal AS
-SELECT
-    CAST(m.fecha AS DATE) AS fecha,
-    ps.sucursal_id,
-    SUM(m.cantidad) AS total
-FROM Movimiento m
-JOIN ProductoSucursal ps ON m.producto_sucursal_id = ps.id
-WHERE m.tipo = 'salida'
-GROUP BY CAST(m.fecha AS DATE), ps.sucursal_id;
-GO
-
-SELECT * FROM vw_VentasDiariasPorSucursal ORDER BY fecha DESC;
-
--- Ventas totales por vendedor
-go
-CREATE VIEW vw_VentasPorVendedor AS
-SELECT
-    m.usuario_id,
-    u.nombre AS vendedor,
-    SUM(m.cantidad) AS total
-FROM Movimiento m
-JOIN Usuario u ON m.usuario_id = u.id
-WHERE m.tipo = 'salida'
-GROUP BY m.usuario_id, u.nombre;
-GO
-
-SELECT * FROM vw_VentasPorVendedor ORDER BY total DESC;
-
---Vista para ver los productos por sucursal
-go
-CREATE VIEW vw_ProductosPorSucursal AS
-SELECT
-    ps.id              AS producto_sucursal_id,
-    p.id               AS producto_id,
-    p.nombre           AS producto,
-    s.id               AS sucursal_id,
-    s.nombre           AS sucursal,
-    ps.stock_actual    AS stock_actual,
-    ps.stock_minimo    AS stock_minimo
-FROM ProductoSucursal ps
-JOIN Producto p ON ps.producto_id = p.id
-JOIN Sucursal s ON ps.sucursal_id = s.id;
-GO
-
---Vista para ver todos los productos de las sucursales
-go
-CREATE VIEW vw_TodosLosProductos AS
-SELECT
-    ps.id              AS producto_sucursal_id,
-    p.id               AS producto_id,
-    p.nombre           AS producto,
-    c.nombre           AS categoria,
-    prv.nombre         AS proveedor,
-    s.id               AS sucursal_id,
-    s.nombre           AS sucursal,
-    ps.stock_actual    AS stock_actual,
-    ps.stock_minimo    AS stock_minimo
-FROM ProductoSucursal ps
-JOIN Producto p ON ps.producto_id = p.id
-JOIN Categoria c ON p.categoria_id = c.id
-JOIN Proveedor prv ON p.proveedor_id = prv.id
-JOIN Sucursal s ON ps.sucursal_id = s.id;
-GO
-
---=====================================================================================================================
--- Obtener ventas de una sucursal en una fecha específica
-go
-CREATE PROCEDURE sp_GetVentasPorFecha
-    @sucursal_id INT,
-    @fecha DATE
-AS
-BEGIN
-    SET NOCOUNT ON;
-    SELECT
-        CAST(m.fecha AS DATE) AS fecha,
-        SUM(m.cantidad) AS total
-    FROM Movimiento m
-    JOIN ProductoSucursal ps ON m.producto_sucursal_id = ps.id
-    WHERE m.tipo = 'salida'
-      AND ps.sucursal_id = @sucursal_id
-      AND CAST(m.fecha AS DATE) = @fecha
-    GROUP BY CAST(m.fecha AS DATE);
-END;
-GO
-
-EXEC sp_GetVentasPorFecha @sucursal_id = 1, @fecha = '2025-05-15';
-
--- Obtener alertas de stock bajo para una sucursal
-go
-CREATE PROCEDURE sp_GetAlertasPorSucursal
-    @sucursal_id INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-    SELECT
-        a.id,
-        a.fecha,
-        p.nombre AS producto,
-        a.stock_actual,
-        a.stock_minimo,
-        a.mensaje
-    FROM Alertas a
-    JOIN Producto p ON a.producto_id = p.id
-    WHERE a.sucursal_id = @sucursal_id
-    ORDER BY a.fecha DESC;
-END;
-GO
-
-EXEC sp_GetAlertasPorSucursal @sucursal_id = 3;
-
---Obtener producto por cada sucursal pedida
-go
-CREATE PROCEDURE sp_GetProductosPorSucursal
-    @sucursal_id INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-    SELECT
-        ps.id              AS producto_sucursal_id,
-        p.id               AS producto_id,
-        p.nombre           AS producto,
-        ps.stock_actual    AS stock_actual,
-        ps.stock_minimo    AS stock_minimo
+    UPDATE ps
+    SET stock_actual = 
+        CASE 
+            WHEN m.tipo = 'entrada' THEN ps.stock_actual + m.cantidad
+            WHEN m.tipo = 'salida' THEN ps.stock_actual - m.cantidad
+            ELSE ps.stock_actual
+        END
     FROM ProductoSucursal ps
-    JOIN Producto p ON ps.producto_id = p.id
-    WHERE ps.sucursal_id = @sucursal_id
-    ORDER BY p.nombre;
-END;
-GO
+    JOIN inserted m ON ps.id = m.producto_sucursal_id;
+END
 
---===========================================================================================================
+--Trigger para autoria
+GO
+CREATE TRIGGER tr_AuditarMovimientos
+ON Movimiento
+AFTER INSERT
+AS
+BEGIN
+  SET NOCOUNT ON;
+  INSERT INTO Auditoria(usuario_id, accion, tabla_afectada)
+  SELECT 
+    usuario_id,
+    CONCAT('Movimiento ID=', id, ' registrado'),
+    'Movimiento'
+  FROM inserted;
+END
+GO
+--Fin de definir trigger
+-------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------
 --Llear las tablas
 --Tablas de sucursales
 INSERT INTO Sucursal (nombre, direccion) VALUES

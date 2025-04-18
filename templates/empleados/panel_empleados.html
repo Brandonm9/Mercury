@@ -1,20 +1,71 @@
-{% extends 'base.html' %}
-{% block titulo %}Panel Empleados{% endblock %}
+{% extends 'base_empleados.html' %}
+
+{% block titulo %}Dashboard Empleado{% endblock %}
+
+{% block navegacion %}
+<a href="{{ url_for('empleados.panel') }}" class="{% if request.path == url_for('empleados.panel') %}activo{% endif %}">
+  <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+</a>
+<a href="{{ url_for('empleados.ingresar_producto') }}"
+  class="{% if request.path == url_for('empleados.ingresar_producto') %}activo{% endif %}">
+  <i class="bi bi-box-arrow-in-down"></i><span>Registrar entrada</span>
+</a>
+<a href="{{ url_for('empleados.registrar_venta') }}"
+  class="{% if request.path == url_for('empleados.registrar_venta') %}activo{% endif %}">
+  <i class="bi bi-cash-stack"></i><span>Registrar venta</span>
+</a>
+{% endblock %}
+
 {% block contenido %}
-<h2>Panel Empleados</h2>
-{% if alertas %}
-  <div class="alert alert-warning">
-    <strong>¡Atención!</strong> Productos con stock bajo:
-    <ul>
-      {% for p in alertas %}
-      <li>{{ p.producto.nombre }}: {{ p.stock_actual }} unidades</li>
+<h3>Inventario Sucursal</h3>
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>Producto</th>
+        <th>Stock Actual</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in productos %}
+      <tr>
+        <td>{{ p.producto }}</td>
+        <td>{{ p.stock_actual }}</td>
+        <td>
+          <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+            data-bs-target="#modal-{{ p.producto_sucursal_id }}">
+            ✎
+          </button>
+        </td>
+      </tr>
       {% endfor %}
-    </ul>
-  </div>
-{% endif %}
-<div class="list-group">
-  <a href="{{ url_for('empleados.ingresar_producto') }}" class="list-group-item">Registrar entrada</a>
-  <a href="{{ url_for('empleados.registrar_venta') }}" class="list-group-item">Registrar venta</a>
-  <a href="{{ url_for('empleados.ajustar_stock') }}" class="list-group-item">Ajustar stock</a>
+    </tbody>
+  </table>
 </div>
+
+{# Modales para ajustar stock #}
+{% for p in productos %}
+<div class="modal fade" id="modal-{{ p.producto_sucursal_id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="{{ url_for('empleados.editar_stock_directo') }}">
+        <div class="modal-header">
+          <h5 class="modal-title">Ajustar stock: {{ p.producto }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="producto_sucursal_id" value="{{ p.producto_sucursal_id }}">
+          <label class="form-label">Nuevo stock</label>
+          <input type="number" name="nuevo_stock" class="form-control" value="{{ p.stock_actual }}" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
 {% endblock %}
