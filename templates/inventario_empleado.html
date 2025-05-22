@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block contenido %}
+  <h2>Inventario (Empleado)</h2>
+  <ul>
+    {% for p in productos %}
+      <li>
+        {{ p.nombre }} — Stock actual: {{ p.stock_actual }}
+        [<a href="{{ url_for('movimiento_empleado', producto_id=p.id, tipo='entrada') }}">+ Entrada</a>]
+        [<a href="{{ url_for('movimiento_empleado', producto_id=p.id, tipo='salida') }}">− Salida</a>]
+      </li>
+    {% else %}
+      <li>No hay productos.</li>
+    {% endfor %}
+  </ul>
+  <a href="{{ url_for('listar_productos_html') }}">« Volver a Productos</a>
+{% endblock %}

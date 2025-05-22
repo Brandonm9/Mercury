@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block contenido %}
+  <h2>{{ 'Editar' if producto else 'Nuevo' }} producto</h2>
+  <form method="post">
+    <label>Nombre: <input name="nombre" value="{{ producto.nombre if producto }}"></label><br>
+    <label>Precio venta: <input name="precio_venta" value="{{ producto.precio_venta if producto }}"></label><br>
+    <label>Stock actual: <input name="stock_actual" value="{{ producto.stock_actual if producto }}"></label><br>
+    <label>Código: <input name="codigo_de_barras" value="{{ producto.codigo_de_barras if producto }}"></label><br>
+    <button type="submit">Guardar</button>
+  </form>
+  <a href="{{ url_for('listar_productos_html') }}">« Volver</a>
+{% endblock %}

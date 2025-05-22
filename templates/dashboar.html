@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block contenido %}
+  <h2>Dashboard de Ventas (Gerente)</h2>
+
+  <!-- Botón para descargar el reporte en Excel -->
+  <p>
+    <a class="boton-descarga" href="{{ url_for('reporte_ventas_excel') }}">
+      📥 Descargar reporte Excel
+    </a>
+  </p>
+
+  <!-- Tabla de métricas -->
+  <table>
+    <thead>
+      <tr><th>Mes</th><th>Total Vendido</th></tr>
+    </thead>
+    <tbody>
+      {% for mes, total in ventas_mes %}
+        <tr><td>{{ mes }}</td><td>{{ total }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Gráfica con Chart.js -->
+  <canvas id="graficaVentas" width="400" height="200"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const labels = {{ ventas_mes | map(attribute=0) | list }};
+    const data = {{ ventas_mes | map(attribute=1) | list }};
+    const ctx = document.getElementById('graficaVentas').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Ventas por Mes',
+          data: data
+        }]
+      }
+    });
+  </script>
+{% endblock %}
