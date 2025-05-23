@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block titulo %}Panel Gerentes{% endblock %}
+{% block contenido %}
+<h2>Panel Gerentes</h2>
+{% if alertas %}
+  <div class="alert alert-warning">
+    <ul>
+      {% for p in alertas %}
+      <li>{{ p.producto.nombre }}: {{ p.stock_actual }} unidades</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+<div class="mb-3">
+  <canvas id="ventasChart"></canvas>
+</div>
+<a href="{{ url_for('gerentes.ventas_vendedor') }}" class="btn btn-secondary">Ventas por vendedor</a>
+<a href="{{ url_for('gerentes.documento_ventas') }}" class="btn btn-info">Generar documento</a>
+<form action="{{ url_for('gerentes.hacer_pedido') }}" method="post" class="d-inline">
+  <button type="submit" class="btn btn-success">Hacer pedido</button>
+</form>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+fetch("{{ url_for('gerentes.api_ventas') }}")
+  .then(res => res.json())
+  .then(datos => {
+    const ctx = document.getElementById('ventasChart');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: datos.map(d => d.fecha),
+        datasets: [{ label: 'Ventas', data: datos.map(d => d.total) }]
+      }
+    });
+  });
+</script>
+{% endblock %}

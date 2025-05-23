@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block titulo %}Ventas por Vendedor{% endblock %}
+{% block contenido %}
+<h2>Ventas por Vendedor</h2>
+<table class="table">
+  <thead><tr><th>Vendedor</th><th>Total</th></tr></thead>
+  <tbody>
+    {% for nombre, total in tabla %}
+    <tr><td>{{ nombre }}</td><td>{{ total }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

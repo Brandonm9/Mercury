@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block titulo %}Panel Administrador{% endblock %}
+{% block contenido %}
+<h2>Panel Administrador</h2>
+<ul class="list-group">
+  {% for s in sucursales %}
+  <li class="list-group-item">
+    <a href="{{ url_for('administrador.ver_sucursal', id_sucursal=s.id) }}">{{ s.nombre }}</a>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

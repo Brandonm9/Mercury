@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block titulo %}Ajustar Stock{% endblock %}
+{% block contenido %}
+<h2>Ajustar Stock</h2>
+<form method="post">
+  <div class="mb-3">
+    <label for="producto_sucursal_id" class="form-label">Producto</label>
+    <select class="form-select" id="producto_sucursal_id" name="producto_sucursal_id">
+      {% for ps in productos %}
+      <option value="{{ ps.id }}">{{ ps.producto.nombre }} (Stock actual: {{ ps.stock_actual }})</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="nuevo_stock" class="form-label">Nuevo stock</label>
+    <input type="number" class="form-control" id="nuevo_stock" name="nuevo_stock" required>
+  </div>
+  <div class="mb-3">
+    <label for="motivo" class="form-label">Motivo</label>
+    <input type="text" class="form-control" id="motivo" name="motivo">
+  </div>
+  <button type="submit" class="btn btn-warning">Ajustar</button>
+</form>
+{% endblock %}
