@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Inventario{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wrapper {
+      display: flex;
+      flex: 1;
+    }
+
+    #sidebar {
+      width: 250px;
+      background-color: #343a40;
+      color: white;
+      transition: width 0.3s;
+    }
+
+    #sidebar.collapsed {
+      width: 60px;
+    }
+
+    #sidebar .logo {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    #sidebar img {
+      width: 50px;
+      border-radius: 50%;
+    }
+
+    #sidebar .menu-label {
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+    }
+
+    #sidebar ul {
+      padding-left: 0;
+    }
+
+    #sidebar ul li {
+      list-style: none;
+    }
+
+    #sidebar ul li a {
+      display: block;
+      padding: 10px 20px;
+      color: white;
+      text-decoration: none;
+    }
+
+    #sidebar ul li a:hover, #sidebar ul li.active a {
+      background-color: #495057;
+    }
+
+    #content {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .header {
+      background: #f8f9fa;
+      padding: 10px 20px;
+    }
+
+    .btn-toggle-sidebar {
+      font-size: 1.2rem;
+      background: none;
+      border: none;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header class="header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">{% block encabezado %}Panel{% endblock %}</h5>
+    <div>
+      {% if current_user.is_authenticated %}
+        <span class="me-3">{{ current_user.nombre }}{% if current_user.sucursal %} - {{ current_user.sucursal.nombre }}{% endif %}</span>
+        <a href="{{ url_for('autenticacion.logout') }}" class="btn btn-outline-secondary btn-sm">Cerrar sesión</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <div class="wrapper">
+    <!-- Sidebar -->
+    <nav id="sidebar" class="d-flex flex-column p-2">
+      <div class="logo">
+        <img src="/static/logo.png" alt="Logo">
+        <button id="sidebarToggle" class="btn-toggle-sidebar mt-2">☰</button>
+      </div>
+      <ul class="nav nav-pills flex-column">
+        {% for item in menu_items %}
+        <li class="{% if request.endpoint == item.endpoint %}active{% endif %}">
+          <a href="{{ url_for(item.endpoint, **(item.args or {})) }}">
+            {{ item.texto }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main id="content">
+      {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% if mensajes %}
+          {% for categoria, msg in mensajes %}
+          <div class="alert alert-{{ categoria }}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% block contenido %}{% endblock %}
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    });
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

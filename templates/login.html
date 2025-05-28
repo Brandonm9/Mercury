@@ -1,0 +1,24 @@
+<!-- templates/login.html -->
+{% extends 'base.html' %}
+
+{% block encabezado %}{% endblock %}
+{% block menu %}{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-center align-items-center vh-100">
+  <div class="card p-4 shadow-sm" style="max-width: 400px; width:100%;">
+    <h3 class="card-title text-center mb-4">Iniciar Sesión</h3>
+    <form method="post">
+      <div class="mb-3">
+        <label for="correo" class="form-label">Correo</label>
+        <input type="email" class="form-control" id="correo" name="correo" required>
+      </div>
+      <div class="mb-3">
+        <label for="contrasena" class="form-label">Contraseña</label>
+        <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Entrar</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

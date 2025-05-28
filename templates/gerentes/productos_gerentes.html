@@ -1,0 +1,50 @@
+<!-- templates/gerentes/productos_gerentes.html -->
+{% extends 'base.html' %}
+
+{% block encabezado %}Inventario Gerentes{% endblock %}
+{% block menu %}
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('gerentes.panel') }}">Inicio</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link active" href="{{ url_for('gerentes.inventario') }}">Inventario</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('gerentes.ventas_vendedor') }}">Ventas por Vendedor</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('gerentes.documento_ventas') }}">Generar Documento</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="#" onclick="document.getElementById('pedido-form').submit()">Hacer Pedido</a>
+    <form id="pedido-form" action="{{ url_for('gerentes.hacer_pedido') }}" method="post" style="display:none;"></form>
+</li>
+{% endblock %}
+
+{% block contenido %}
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Inventario de {{ current_user.sucursal.nombre }}</h4>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Stock Actual</th>
+                        <th>Stock Mínimo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in productos %}
+                    <tr class="{% if p.stock_actual <= p.stock_minimo %}table-warning{% endif %}">
+                        <td>{{ p.producto }}</td>
+                        <td>{{ p.stock_actual }}</td>
+                        <td>{{ p.stock_minimo }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

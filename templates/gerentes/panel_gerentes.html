@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block titulo %}Panel Gerentes{% endblock %}
+
+{% block contenido %}
+<h2>Panel Gerentes</h2>
+
+{% if alertas %}
+  <div class="alert alert-warning">
+    <ul>
+      {% for p in alertas %}
+      <li>{{ p.producto.nombre }}: {{ p.stock_actual }} unidades</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+<!-- Gráfico responsivo -->
+<div class="chart-container mb-3" style="position: relative; width: 100%; max-width: 800px; margin: auto;">
+  <canvas id="miGraficoVentas"></canvas>
+</div>
+
+<a href="{{ url_for('gerentes.ventas_vendedor') }}" class="btn btn-secondary">Ventas por vendedor</a>
+<a href="{{ url_for('gerentes.documento_ventas') }}" class="btn btn-info">Generar documento</a>
+<form action="{{ url_for('gerentes.hacer_pedido') }}" method="post" class="d-inline">
+  <button type="submit" class="btn btn-success">Hacer pedido</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const datosVentas = {{ ventas|tojson }};
+  const etiquetas   = datosVentas.map(d => d.fecha);
+  const valores     = datosVentas.map(d => d.total);
+
+  const ctx = document.getElementById('miGraficoVentas').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: etiquetas,
+      datasets: [{
+        label: 'Ventas',
+        data: valores,
+        fill: false,
+        tension: 0.1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

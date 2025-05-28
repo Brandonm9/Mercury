@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block titulo %}Panel Empleados{% endblock %}
+{% block contenido %}
+<h2>Panel Empleados</h2>
+{% if alertas %}
+  <div class="alert alert-warning">
+    <strong>¡Atención!</strong> Productos con stock bajo:
+    <ul>
+      {% for p in alertas %}
+      <li>{{ p.producto.nombre }}: {{ p.stock_actual }} unidades</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+<div class="list-group">
+  <a href="{{ url_for('empleados.ingresar_producto') }}" class="list-group-item">Registrar entrada</a>
+  <a href="{{ url_for('empleados.registrar_venta') }}" class="list-group-item">Registrar venta</a>
+  <a href="{{ url_for('empleados.ajustar_stock') }}" class="list-group-item">Ajustar stock</a>
+</div>
+{% endblock %}

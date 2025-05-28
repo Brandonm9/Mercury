@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block titulo %}Generar Documento{% endblock %}
+{% block contenido %}
+<h2>Generar Documento de Ventas</h2>
+<form method="post">
+  <div class="mb-3">
+    <label for="fecha" class="form-label">Fecha</label>
+    <input type="date" class="form-control" id="fecha" name="fecha" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Generar</button>
+</form>
+{% endblock %}
