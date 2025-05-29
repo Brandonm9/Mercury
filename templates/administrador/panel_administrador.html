@@ -1,12 +1,116 @@
-{% extends 'base.html' %}
+{# templates/administrador/panel_administrador.html #}
+{% extends 'administrador/base_admin.html' %}
+
 {% block titulo %}Panel Administrador{% endblock %}
+
+{% block navegacion %}
+<a href="{{ url_for('administrador.panel_administrador') }}"
+  class="{% if request.path == url_for('administrador.panel_administrador') %}activo{% endif %}">
+  <i class="bi bi-speedometer2"></i> Dashboard
+</a>
+<a href="{{ url_for('administrador.inventario_global') }}">
+  <i class="bi bi-box-seam"></i> Productos totales
+</a>
+<a href="{{ url_for('administrador.auditoria') }}">
+  <i class="bi bi-journal-text"></i> Auditoría
+</a>
+{% endblock %}
+
 {% block contenido %}
-<h2>Panel Administrador</h2>
-<ul class="list-group">
-  {% for s in sucursales %}
-  <li class="list-group-item">
-    <a href="{{ url_for('administrador.ver_sucursal', id_sucursal=s.id) }}">{{ s.nombre }}</a>
-  </li>
-  {% endfor %}
-</ul>
+<div class="container-fluid">
+  <h2 class="mb-4">Panel Administrador</h2>
+
+  <!-- Selección de Sucursal -->
+  <form method="get" class="row g-2 align-items-center mb-4">
+    <div class="col-auto">
+      <label for="sucursal-select" class="col-form-label">Sucursal:</label>
+    </div>
+    <div class="col-auto">
+      <select id="sucursal-select" name="sucursal_id" class="form-select" onchange="this.form.submit()">
+        <option value="">-- Elija una sucursal --</option>
+        {% for suc in sucursales %}
+        <option value="{{ suc.id }}" {% if suc.id==id_sucursal %}selected{% endif %}>{{ suc.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+
+  {% if id_sucursal %}
+  {% set sucursal_actual = (sucursales | selectattr('id','equalto',id_sucursal) | list).0 %}
+
+  {# Ventas totales #}
+  <div class="card mb-4">
+    <div class="card-header">
+      <strong>Ventas diarias – {{ sucursal_actual.nombre }}</strong>
+    </div>
+    <div class="card-body">
+      {% if ventas_suc %}
+      <ul class="list-group">
+        {% for v in ventas_suc %}
+        <li class="list-group-item">
+          {{ v.fecha }}: {{ v.total }} unidades
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-muted">No hay ventas registradas.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  {# Ventas por vendedor #}
+  <div class="card mb-4">
+    <div class="card-header">
+      <strong>Ventas por vendedor</strong>
+    </div>
+    <div class="card-body">
+      {% if ventas_vend %}
+      <ul class="list-group">
+        {% for v in ventas_vend %}
+        <li class="list-group-item d-flex justify-content-between">
+          <span>{{ v.vendedor }}</span>
+          <span>{{ v.total }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-muted">No hay datos.</p>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# Auditoría #}
+  <div class="card">
+    <div class="card-header">
+      <strong>Registro de Auditoría{% if id_sucursal %} – {{ sucursal_actual.nombre }}{% endif %}</strong>
+    </div>
+    <div class="card-body">
+      {% if auditorias %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Acción</th>
+            <th>Tabla</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in auditorias %}
+          <tr>
+            <td>{{ a.fecha }}</td>
+            <td>{{ a.usuario }}</td>
+            <td>{{ a.accion }}</td>
+            <td>{{ a.tabla_afectada }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="text-muted">No hay registros de auditoría{% if id_sucursal %} para esta sucursal{% endif %}.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -1,0 +1,63 @@
+<!-- templates/administrador/base_admin.html -->
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}Panel Administrador{% endblock %}</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CSS compartido con empleados/gerentes -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_empleado.css') }}">
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header class="d-flex align-items-center justify-content-between px-4 py-2 bg-light shadow-sm">
+        <div></div>
+        <div class="text-center fw-bold">
+            {{ current_user.nombre }}{% if current_user.sucursal %} – {{ current_user.sucursal.nombre }}{% endif %}
+        </div>
+        <div>
+            <a href="{{ url_for('autenticacion.logout') }}" class="btn btn-outline-secondary btn-sm">Cerrar sesión</a>
+        </div>
+    </header>
+
+    <div class="d-flex h-100">
+        <!-- SIDEBAR FIJO -->
+        <aside id="sidebar">
+            <nav class="nav flex-column px-2">
+                {% block navegacion %}{% endblock %}
+            </nav>
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="flex-grow-1 p-4 overflow-auto">
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+            {% if mensajes %}
+            {% for cat, msg in mensajes %}
+            <div class="alert alert-{{ cat }}">{{ msg }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            {% block contenido %}{% endblock %}
+        </main>
+    </div>
+
+    {% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Desvanecer mensajes flash tras 5 segundos
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(a => {
+                a.style.transition = 'opacity .8s';
+                a.style.opacity = 0;
+                setTimeout(() => a.remove(), 800);
+            });
+        }, 5000);
+    </script>
+    {% endblock %}
+</body>
+
+</html>

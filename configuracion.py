@@ -7,11 +7,11 @@ load_dotenv(os.path.join(basedir, '.env'))
 
 class Configuración:
     CLAVE_SECRETA = os.getenv('CLAVE_SECRETA', 'clave_por_defecto')
-    SECRET_KEY = CLAVE_SECRETA  # ← esta línea es la que hace falta
+    SECRET_KEY = CLAVE_SECRETA  
 
     SERVIDOR = os.getenv('BD_HOST', 'localhost')
     PUERTO = os.getenv('BD_PUERTO', '1433')
-    USUARIO_BD = os.getenv('BD_USUARIO', 'SA')
+    USUARIO_BD = os.getenv('BD_USUARIO', '')
     CLAVE_BD = os.getenv('BD_CLAVE', '')
     NOMBRE_BD = os.getenv('BD_NOMBRE', 'InventarioDB')
 

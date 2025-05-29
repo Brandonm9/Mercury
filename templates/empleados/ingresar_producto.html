@@ -1,7 +1,24 @@
-{% extends 'base.html' %}
-{% block titulo %}Ingresar Producto{% endblock %}
+<!-- templates/empleados/ingresar_producto.html -->
+{% extends 'base_empleados.html' %}
+
+{% block titulo %}Registrar Entrada{% endblock %}
+
+{% block navegacion %}
+<a href="{{ url_for('empleados.panel') }}" class="{% if request.path == url_for('empleados.panel') %}activo{% endif %}">
+  <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+</a>
+<a href="{{ url_for('empleados.ingresar_producto') }}"
+  class="{% if request.path == url_for('empleados.ingresar_producto') %}activo{% endif %}">
+  <i class="bi bi-box-arrow-in-down"></i><span>Registrar entrada</span>
+</a>
+<a href="{{ url_for('empleados.registrar_venta') }}"
+  class="{% if request.path == url_for('empleados.registrar_venta') %}activo{% endif %}">
+  <i class="bi bi-cash-stack"></i><span>Registrar venta</span>
+</a>
+{% endblock %}
+
 {% block contenido %}
-<h2>Ingresar Producto</h2>
+<h2>Registrar Entrada</h2>
 <form method="post">
   <div class="mb-3">
     <label for="producto_sucursal_id" class="form-label">Producto</label>
@@ -19,6 +36,6 @@
     <label for="motivo" class="form-label">Motivo</label>
     <input type="text" class="form-control" id="motivo" name="motivo">
   </div>
-  <button type="submit" class="btn btn-success">Registrar</button>
+  <button type="submit" class="btn btn-success">Registrar entrada</button>
 </form>
 {% endblock %}

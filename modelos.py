@@ -1,7 +1,7 @@
-from app import db, login_manager
+# modelos.py
+from app import db, login_manager, bcrypt
 from flask_login import UserMixin
 from datetime import datetime
-
 
 class Sucursal(db.Model):
     __tablename__ = 'Sucursal'
@@ -15,7 +15,6 @@ class Sucursal(db.Model):
     def __repr__(self):
         return f"<Sucursal {self.nombre}>"
 
-
 class Categoria(db.Model):
     __tablename__ = 'Categoria'
     id = db.Column(db.Integer, primary_key=True)
@@ -26,7 +25,6 @@ class Categoria(db.Model):
 
     def __repr__(self):
         return f"<Categoria {self.nombre}>"
-
 
 class Proveedor(db.Model):
     __tablename__ = 'Proveedor'
@@ -42,7 +40,6 @@ class Proveedor(db.Model):
     def __repr__(self):
         return f"<Proveedor {self.nombre}>"
 
-
 class Producto(db.Model):
     __tablename__ = 'Producto'
     id = db.Column(db.Integer, primary_key=True)
@@ -56,7 +53,6 @@ class Producto(db.Model):
 
     def __repr__(self):
         return f"<Producto {self.nombre}>"
-
 
 class ProductoSucursal(db.Model):
     __tablename__ = 'ProductoSucursal'
@@ -77,7 +73,6 @@ class ProductoSucursal(db.Model):
     def __repr__(self):
         return f"<Existencia {self.producto.nombre} en {self.sucursal.nombre}>"
 
-
 class Usuario(UserMixin, db.Model):
     __tablename__ = 'Usuario'
     id = db.Column(db.Integer, primary_key=True)
@@ -96,15 +91,15 @@ class Usuario(UserMixin, db.Model):
     def __repr__(self):
         return f"<Usuario {self.nombre} ({self.rol})>"
 
+    def set_contrasena(self, contrasena_plana):
+        self.contrasena = bcrypt.generate_password_hash(contrasena_plana).decode('utf-8')
+
     def verificar_contrasena(self, contrasena_plana):
-        return self.contrasena == contrasena_plana
-
-
+        return bcrypt.check_password_hash(self.contrasena, contrasena_plana)
 
 @login_manager.user_loader
 def cargar_usuario(id):
     return Usuario.query.get(int(id))
-
 
 class Movimiento(db.Model):
     __tablename__ = 'Movimiento'
@@ -121,7 +116,6 @@ class Movimiento(db.Model):
 
     def __repr__(self):
         return f"<Movimiento {self.tipo} {self.cantidad} unidad(es)>"
-
 
 class Auditoria(db.Model):
     __tablename__ = 'Auditoria'

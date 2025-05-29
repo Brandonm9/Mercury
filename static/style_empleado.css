@@ -1,0 +1,104 @@
+/* Body y layout */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f5f5f5;
+    height: 100%;
+}
+
+.d-flex.h-100 {
+    height: calc(100vh - 56px);
+    /* restamos header */
+}
+
+/* Sidebar contenedor tipo tarjeta */
+aside#sidebar {
+    width: 250px;
+    padding: 1rem;
+    background: transparent;
+    /* sin color de fondo directo */
+    position: relative;
+    z-index: 1;
+}
+
+/* Tarjeta blanca contenedora del menú */
+.sidebar-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Encabezado en la tarjeta (opcional para ícono o nombre app) */
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-header i {
+    color: #0d6efd;
+    font-size: 2rem;
+}
+
+.sidebar-header h5 {
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+}
+
+/* Enlaces del menú */
+aside#sidebar .nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+aside#sidebar .nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 10px 16px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 12px;
+    background-color: transparent;
+    transition: background 0.2s, color 0.2s;
+    font-weight: 500;
+}
+
+/* Hover */
+aside#sidebar .nav a:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+}
+
+/* Activo */
+aside#sidebar .nav a.activo {
+    background: #0d6efd;
+    color: white !important;
+    font-weight: bold;
+    box-shadow: inset 3px 0 0 #ffc107;
+}
+
+/* Iconos */
+aside#sidebar .nav a i {
+    font-size: 1.2rem;
+}
+
+aside#sidebar .nav a.activo i {
+    color: white;
+}
+
+/* Main content */
+main {
+    background: #f5f5f5;
+    overflow: auto;
+    padding: 1.5rem;
+}
+
+/* Tablas */
+.table-responsive {
+    margin-top: 1rem;
+}

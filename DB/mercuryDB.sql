@@ -145,47 +145,47 @@ INSERT INTO Sucursal (nombre, direccion) VALUES
 --tabla de usuarios
 -- Empleados y gerentes para Sucursal Central (id=1)
 INSERT INTO Usuario (nombre, correo, contrasena, rol, sucursal_id) VALUES
-('Juan Pérez',   'juan.perez.central@correo.com',   'clave123', 'Empleado', 1),
-('Ana Torres',   'ana.torres.central@correo.com',   'clave123', 'Empleado', 1),
-('Carlos Ruiz',  'carlos.ruiz.central@correo.com',  'clave123', 'Empleado', 1),
-('Luisa Gómez',  'luisa.gomez.central@correo.com',  'clave123', 'Empleado', 1),
-('Gloria Lara',  'gloria.lara.central@correo.com',  'clave123', 'Gerente',  1);
+('Juan Pérez',   'juan.perez.central@correo.com',   '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 1),
+('Ana Torres',   'ana.torres.central@correo.com',   '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 1),
+('Carlos Ruiz',  'carlos.ruiz.central@correo.com',  '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 1),
+('Luisa Gómez',  'luisa.gomez.central@correo.com',  '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 1),
+('Gloria Lara',  'gloria.lara.central@correo.com',  '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Gerente',  1);
 
 -- Empleados y gerentes para Sucursal Norte (id=2)
 INSERT INTO Usuario (nombre, correo, contrasena, rol, sucursal_id) VALUES
-('Mario López',   'mario.lopez.norte@correo.com',    'clave123', 'Empleado', 2),
-('Sara Méndez',   'sara.mendez.norte@correo.com',    'clave123', 'Empleado', 2),
-('Pedro Salazar', 'pedro.salazar.norte@correo.com',  'clave123', 'Empleado', 2),
-('Julia Castro',  'julia.castro.norte@correo.com',   'clave123', 'Empleado', 2),
-('Esteban Díaz',  'esteban.diaz.norte@correo.com',   'clave123', 'Gerente',  2);
+('Mario López',   'mario.lopez.norte@correo.com',    '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 2),
+('Sara Méndez',   'sara.mendez.norte@correo.com',    '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 2),
+('Pedro Salazar', 'pedro.salazar.norte@correo.com',  '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 2),
+('Julia Castro',  'julia.castro.norte@correo.com',   '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 2),
+('Esteban Díaz',  'esteban.diaz.norte@correo.com',   '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Gerente',  2);
 
 -- Empleados y gerentes para Sucursal Sur (id=3)
 INSERT INTO Usuario (nombre, correo, contrasena, rol, sucursal_id) VALUES
-('Miguel Molina',  'miguel.molina.sur@correo.com',    'clave123', 'Empleado', 3),
-('Verónica Silva', 'veronica.silva.sur@correo.com',   'clave123', 'Empleado', 3),
-('Raúl Herrera',   'raul.herrera.sur@correo.com',     'clave123', 'Empleado', 3),
-('Paula Cabrera',  'paula.cabrera.sur@correo.com',    'clave123', 'Empleado', 3),
-('Cristina Rivas', 'cristina.rivas.sur@correo.com',   'clave123', 'Gerente',  3);
+('Miguel Molina',  'miguel.molina.sur@correo.com',    '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 3),
+('Verónica Silva', 'veronica.silva.sur@correo.com',   '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 3),
+('Raúl Herrera',   'raul.herrera.sur@correo.com',     '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 3),
+('Paula Cabrera',  'paula.cabrera.sur@correo.com',    '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 3),
+('Cristina Rivas', 'cristina.rivas.sur@correo.com',   '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Gerente',  3);
 
 -- Empleados y gerentes para Sucursal Este (id=4)
 INSERT INTO Usuario (nombre, correo, contrasena, rol, sucursal_id) VALUES
-('Fernando Ortiz',   'fernando.ortiz.este@correo.com',   'clave123', 'Empleado', 4),
-('Isabel Paredes',   'isabel.paredes.este@correo.com',   'clave123', 'Empleado', 4),
-('Emilio Guzmán',    'emilio.guzman.este@correo.com',    'clave123', 'Empleado', 4),
-('Laura Villalta',   'laura.villalta.este@correo.com',   'clave123', 'Empleado', 4),
-('Héctor Romero',    'hector.romero.este@correo.com',    'clave123', 'Gerente',  4);
+('Fernando Ortiz',   'fernando.ortiz.este@correo.com',   '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 4),
+('Isabel Paredes',   'isabel.paredes.este@correo.com',   '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 4),
+('Emilio Guzmán',    'emilio.guzman.este@correo.com',    '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 4),
+('Laura Villalta',   'laura.villalta.este@correo.com',   '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 4),
+('Héctor Romero',    'hector.romero.este@correo.com',    '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Gerente',  4);
 
 -- Empleados y gerentes para Sucursal Oeste (id=5)
 INSERT INTO Usuario (nombre, correo, contrasena, rol, sucursal_id) VALUES
-('Patricia Roldán',  'patricia.roldan.oeste@correo.com', 'clave123', 'Empleado', 5),
-('Gabriel Funes',    'gabriel.funes.oeste@correo.com',   'clave123', 'Empleado', 5),
-('Alicia Campos',    'alicia.campos.oeste@correo.com',   'clave123', 'Empleado', 5),
-('David Castillo',   'david.castillo.oeste@correo.com',  'clave123', 'Empleado', 5),
-('Rosa Moreno',      'rosa.moreno.oeste@correo.com',     'clave123', 'Gerente',  5);
+('Patricia Roldán',  'patricia.roldan.oeste@correo.com', '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 5),
+('Gabriel Funes',    'gabriel.funes.oeste@correo.com',   '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 5),
+('Alicia Campos',    'alicia.campos.oeste@correo.com',   '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 5),
+('David Castillo',   'david.castillo.oeste@correo.com',  '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Empleado', 5),
+('Rosa Moreno',      'rosa.moreno.oeste@correo.com',     '$2b$12$wr2SNRv6PY7KJ/NwnWW0F.mC89A8mtxalJr3OL1H6eK5zPCCvZmNC', 'Gerente',  5);
 
 -- Administrador global (sucursal_id = NULL)
 INSERT INTO Usuario (nombre, correo, contrasena, rol, sucursal_id) VALUES
-('Administrador General', 'admin.general@correo.com', 'admin123', 'Administrador', NULL);
+('Administrador General', 'admin.general@correo.com', '$2b$12$M4Z0hsHD7Kcd2Y2E2WRqIOTmGDLFZdkS0sztRQq3jeoA41Ma1rjvi', 'Administrador', NULL);
 -------------------------------------------------------------------------------------------
 
 --Catergoria

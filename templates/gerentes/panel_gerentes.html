@@ -1,39 +1,61 @@
-{% extends 'base.html' %}
-{% block titulo %}Panel Gerentes{% endblock %}
+{% extends 'base_gerente.html' %}
+
+{% block navegacion %}
+<a href="{{ url_for('gerentes.panel') }}" class="{% if request.path == url_for('gerentes.panel') %}activo{% endif %}">
+  <i class="bi bi-speedometer2"></i>
+  <span>Dashboard</span>
+</a>
+<a href="{{ url_for('gerentes.documento_ventas') }}"
+  class="{% if request.path == url_for('gerentes.documento_ventas') %}activo{% endif %}">
+  <i class="bi bi-file-earmark-text"></i>
+  <span>Generar reporte</span>
+</a>
+<a href="{{ url_for('gerentes.ventas_vendedor') }}"
+  class="{% if request.path == url_for('gerentes.ventas_vendedor') %}activo{% endif %}">
+  <i class="bi bi-people"></i>
+  <span>Ventas por vendedor</span>
+</a>
+{% endblock %}
+
+{% block titulo %}Dashboard{% endblock %}
+
 {% block contenido %}
-<h2>Panel Gerentes</h2>
+<h2>Dashboard</h2>
+
 {% if alertas %}
-  <div class="alert alert-warning">
-    <ul>
-      {% for p in alertas %}
-      <li>{{ p.producto.nombre }}: {{ p.stock_actual }} unidades</li>
-      {% endfor %}
-    </ul>
-  </div>
-{% endif %}
-<div class="mb-3">
-  <canvas id="ventasChart"></canvas>
+<div class="alert alert-warning">
+  <ul class="mb-0">
+    {% for p in alertas %}
+    <li>{{ p.producto.nombre }}: {{ p.stock_actual }} unidades</li>
+    {% endfor %}
+  </ul>
 </div>
-<a href="{{ url_for('gerentes.ventas_vendedor') }}" class="btn btn-secondary">Ventas por vendedor</a>
-<a href="{{ url_for('gerentes.documento_ventas') }}" class="btn btn-info">Generar documento</a>
-<form action="{{ url_for('gerentes.hacer_pedido') }}" method="post" class="d-inline">
+{% endif %}
+
+<div class="chart-container mb-4" style="position: relative; width: 100%; height: 400px;">
+  <canvas id="miGraficoVentas"></canvas>
+</div>
+
+<form action="{{ url_for('gerentes.hacer_pedido') }}" method="post">
   <button type="submit" class="btn btn-success">Hacer pedido</button>
 </form>
 {% endblock %}
+
 {% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{ super() }}
 <script>
-fetch("{{ url_for('gerentes.api_ventas') }}")
-  .then(res => res.json())
-  .then(datos => {
-    const ctx = document.getElementById('ventasChart');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: datos.map(d => d.fecha),
-        datasets: [{ label: 'Ventas', data: datos.map(d => d.total) }]
-      }
-    });
+  const datosVentas = {{ ventas| tojson }};
+  const etiquetas = datosVentas.map(d => d.fecha);
+  const valores = datosVentas.map(d => d.total);
+  const ctx = document.getElementById('miGraficoVentas').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: { labels: etiquetas, datasets: [{ label: 'Ventas', data: valores, fill: false, tension: 0.1 }] },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: { y: { beginAtZero: true } }
+    }
   });
 </script>
 {% endblock %}

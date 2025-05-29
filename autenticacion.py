@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db, login_manager
 from modelos import Usuario
-from flask_bcrypt import generate_password_hash, check_password_hash
+#from flask_bcrypt import generate_password_hash, check_password_hash
 
 autenticacion = Blueprint('autenticacion', __name__, template_folder='templates/autenticacion')
 
@@ -12,17 +12,21 @@ def cargar_usuario(id):
     return Usuario.query.get(int(id))
 
 @autenticacion.route('/login', methods=['GET', 'POST'])
-@autenticacion.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         correo = request.form.get('correo')
         contrasena = request.form.get('contrasena')
         usuario = Usuario.query.filter_by(correo=correo).first()
 
+        print(f"[DEBUG] login intento: correo={correo}, usuario_encontrado={bool(usuario)}")
+        print(f"[DEBUG] hash en BD para {correo}: {usuario.contrasena}")
+        print(f"[DEBUG] resultado check: {usuario.verificar_contrasena(contrasena)}")
+
         if usuario and usuario.verificar_contrasena(contrasena):
             login_user(usuario)
             flash('Inicio de sesión correcto.', 'success')
 
+        
             # Redirigir al panel correcto según el rol
             if usuario.rol == 'Empleado':
                 return redirect(url_for('empleados.panel'))

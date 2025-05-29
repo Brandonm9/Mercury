@@ -1,13 +1,42 @@
-{% extends 'base.html' %}
+{% extends 'base_gerente.html' %}
+
+{% block navegacion %}
+<a href="{{ url_for('gerentes.panel') }}" class="{% if request.path == url_for('gerentes.panel') %}activo{% endif %}">
+  <i class="bi bi-speedometer2"></i>
+  <span>Dashboard</span>
+</a>
+<a href="{{ url_for('gerentes.documento_ventas') }}"
+  class="{% if request.path == url_for('gerentes.documento_ventas') %}activo{% endif %}">
+  <i class="bi bi-file-earmark-text"></i>
+  <span>Generar reporte</span>
+</a>
+<a href="{{ url_for('gerentes.ventas_vendedor') }}"
+  class="{% if request.path == url_for('gerentes.ventas_vendedor') %}activo{% endif %}">
+  <i class="bi bi-people"></i>
+  <span>Ventas por vendedor</span>
+</a>
+{% endblock %}
+
 {% block titulo %}Ventas por Vendedor{% endblock %}
+
 {% block contenido %}
 <h2>Ventas por Vendedor</h2>
-<table class="table">
-  <thead><tr><th>Vendedor</th><th>Total</th></tr></thead>
-  <tbody>
-    {% for nombre, total in tabla %}
-    <tr><td>{{ nombre }}</td><td>{{ total }}</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>Vendedor</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in ventas %}
+      <tr>
+        <td>{{ v.vendedor }}</td>
+        <td>{{ v.total }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

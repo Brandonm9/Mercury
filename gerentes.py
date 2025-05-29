@@ -1,48 +1,74 @@
 # gerentes.py
-from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import current_user
-from app import db
-from modelos import Movimiento, Usuario
 from autenticacion import rol_requerido
-from servicios import obtener_alertas_stock, ventas_por_sucursal, ventas_por_vendedor
+from servicios import obtener_alertas_stock, ventas_por_sucursal, ventas_por_vendedor, obtener_productos_sucursal
+
 
 gerentes = Blueprint('gerentes', __name__, template_folder='templates/gerentes')
 
-@gerentes.route('/gerentes')
+@gerentes.route('/', methods=['GET'])
 @rol_requerido(['Gerente'])
 def panel():
-    # Alertas de stock bajo para la sucursal del gerente
     alertas = obtener_alertas_stock(current_user.sucursal_id)
-    return render_template('panel_gerentes.html', alertas=alertas)
+    ventas   = ventas_por_sucursal(current_user.sucursal_id)
+    menu_items = [
+        {'texto': 'Panel Principal',     'endpoint': 'gerentes.panel'},
+        {'texto': 'Ventas por vendedor', 'endpoint': 'gerentes.ventas_vendedor'},
+        {'texto': 'Generar documento',   'endpoint': 'gerentes.documento_ventas'},
+        {'texto': 'Hacer pedido',        'endpoint': 'gerentes.hacer_pedido'}
+    ]
+    return render_template(
+        'panel_gerentes.html',
+        alertas=alertas,
+        ventas=ventas,
+        menu_items=menu_items
+    )
 
-@gerentes.route('/gerentes/api/ventas')
-@rol_requerido(['Gerente'])
-def api_ventas():
-    # Devuelve datos de ventas por fecha para gráficas
-    datos = ventas_por_sucursal(current_user.sucursal_id)
-    return jsonify(datos)
-
-@gerentes.route('/gerentes/ventas_por_vendedor')
+@gerentes.route('/ventas_vendedor', methods=['GET'])
 @rol_requerido(['Gerente'])
 def ventas_vendedor():
-    # Tabla de totales por vendedor
-    tabla = ventas_por_vendedor(current_user.sucursal_id)
-    return render_template('ventas_vendedor.html', tabla=tabla)
+    alertas = obtener_alertas_stock(current_user.sucursal_id)
+    ventas   = ventas_por_vendedor(current_user.sucursal_id)
+    menu_items = [
+        {'texto': 'Panel Principal',     'endpoint': 'gerentes.panel'},
+        {'texto': 'Ventas por vendedor', 'endpoint': 'gerentes.ventas_vendedor'},
+        {'texto': 'Generar documento',   'endpoint': 'gerentes.documento_ventas'},
+        {'texto': 'Hacer pedido',        'endpoint': 'gerentes.hacer_pedido'}
+    ]
+    return render_template(
+        'ventas_vendedor.html',
+        alertas=alertas,
+        ventas=ventas,
+        menu_items=menu_items
+    )
 
-@gerentes.route('/gerentes/documento_ventas', methods=['GET', 'POST'])
+@gerentes.route('/documento_ventas', methods=['GET', 'POST'])
 @rol_requerido(['Gerente'])
 def documento_ventas():
-    if request.method == 'POST':
-        fecha = request.form.get('fecha')  # formato YYYY-MM-DD
-        # Generar PDF de ventas en esa fecha (stub)
-        # Aquí integrar ReportLab o WeasyPrint
-        flash(f'Documento de ventas para {fecha} generado.', 'success')
-        return redirect(url_for('gerentes.panel'))
-    return render_template('documento_ventas.html')
+    alertas = obtener_alertas_stock(current_user.sucursal_id)
+    menu_items = [
+        {'texto': 'Panel Principal',     'endpoint': 'gerentes.panel'},
+        {'texto': 'Ventas por vendedor', 'endpoint': 'gerentes.ventas_vendedor'},
+        {'texto': 'Generar documento',   'endpoint': 'gerentes.documento_ventas'},
+        {'texto': 'Hacer pedido',        'endpoint': 'gerentes.hacer_pedido'}
+    ]
+    # Aquí podrías generar un doc (PDF, Excel, etc.)
+    return render_template(
+        'documento_ventas.html',
+        alertas=alertas,
+        menu_items=menu_items
+    )
 
-@gerentes.route('/gerentes/hacer_pedido', methods=['POST'])
+@gerentes.route('/gerentes/inventario')
+@rol_requerido(['Gerente'])
+def inventario():
+    productos = obtener_productos_sucursal(current_user.sucursal_id)
+    return render_template('productos_gerentes.html', productos=productos)
+
+@gerentes.route('/hacer_pedido', methods=['POST'])
 @rol_requerido(['Gerente'])
 def hacer_pedido():
-    # Botón que simula pedido al proveedor
-    flash('Pedido al proveedor realizado correctamente.', 'info')
-    return redirect(url_for('gerentes.panel'))
+    # Sólo mostramos un flash; no hay lógica de envíos real
+    flash('Pedido enviado al proveedor.', 'info')
+    return redirect(url_for('gerentes.ventas_vendedor'))
